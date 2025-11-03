@@ -7,11 +7,62 @@
     body { font-family: Arial; text-align: center; padding-top: 40px; }
     .card { margin: 15px auto; padding: 20px; width: 200px; border-radius: 12px; box-shadow: 0 2px 6px #aaa; }
   </style>
+
+<!-- Firebase v8-style compat scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
 </head>
+
 <body>
   <h1>🏠 Roommate Activity</h1>
-  <div id="statuses"></div>
+
+  <div id="roommateList">Loading...</div>
+
+
+  <script>
+  const firebaseConfig = {
+  apiKey: "AIzaSyDMR1JPNk2XDzfcAuxxAB0GhZiE2pxppag",
+  authDomain: "roommate-status.firebaseapp.com",
+  databaseURL: "https://roommate-status-default-rtdb.firebaseio.com",
+  projectId: "roommate-status",
+  storageBucket: "roommate-status.firebasestorage.app",
+  messagingSenderId: "1008981163727",
+  appId: "1:1008981163727:web:1bb8f6c69f06fe070681ba"
+};
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+      // Reference the "Roommates" branch
+    const roommatesRef = db.ref("Roommates");
+
+    //  Listen for updates in real-time
+    roommatesRef.on("value", (snapshot) => {
+      const data = snapshot.val();
+      const container = document.getElementById("roommateList");
+      container.innerHTML = ""; // clear old data
+
+      // Loop through each Roommate
+      for (const roommateKey in data) {
+        const roommate = data[roommateKey];
+        const name = roommate.Name;
+        const status = roommate.Status;
+
+        // Create an HTML element to display info
+        const item = document.createElement("p");
+        item.textContent = `${name}: ${status}`;
+        container.appendChild(item);
+      }
+    });
+
+
+
+  </script>
+
 
 
 </body>
+
 </html>
